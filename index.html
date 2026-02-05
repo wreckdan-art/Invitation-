@@ -3,61 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <title>Valentine 💘</title>
+
 <style>
-  body {
-    height: 100vh;
-    margin: 0;
-    background: linear-gradient(135deg, #ff4d6d, #ff8fa3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Comic Sans MS', cursive;
-    overflow: hidden;
-  }
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Comic Sans MS', cursive;
+}
 
-  .card {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  }
+body {
+  background: radial-gradient(circle at top, #ff9a9e, #ff4d6d);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 2s ease;
+}
 
-  h1 {
-    color: #ff4d6d;
-    margin-bottom: 30px;
-  }
+.card {
+  background: rgba(255,255,255,0.95);
+  padding: 45px;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.3);
+  z-index: 10;
+  animation: fadeIn 1.2s ease;
+}
 
-  button {
-    padding: 12px 25px;
-    font-size: 18px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin: 10px;
-  }
+h1 { color: #ff3366; }
 
-  #yes {
-    background: #ff4d6d;
-    color: white;
-  }
+button {
+  padding: 14px 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  margin: 10px;
+}
 
-  #no {
-    background: #ccc;
-    position: absolute;
-  }
+#yes {
+  background: linear-gradient(135deg, #ff3366, #ff6f91);
+  color: white;
+  box-shadow: 0 0 20px rgba(255,51,102,0.7);
+}
 
-  .dance {
-    font-size: 60px;
-    animation: dance 0.8s infinite alternate;
-  }
+#no {
+  background: #ddd;
+  position: absolute;
+}
 
-  @keyframes dance {
-    from { transform: rotate(-10deg); }
-    to { transform: rotate(10deg); }
-  }
+.love-mode {
+  background: radial-gradient(circle, #ffe3e3, #ff7a9e);
+}
+
+/* Glow pulse */
+.love-mode .card {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 30px rgba(255,105,180,0.6); }
+  50% { box-shadow: 0 0 60px rgba(255,105,180,1); }
+  100% { box-shadow: 0 0 30px rgba(255,105,180,0.6); }
+}
+
+/* Flowers */
+.flower {
+  position: absolute;
+  bottom: -150px;
+  font-size: 70px;
+  animation: grow 4s ease forwards;
+}
+
+.stem {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  height: 0;
+  background: linear-gradient(to top, gold, #00ffd5);
+  box-shadow: 0 0 25px gold;
+  animation: stemGrow 3s ease forwards;
+}
+
+@keyframes grow { to { bottom: 150px; } }
+@keyframes stemGrow { to { height: 180px; } }
+
+/* Hearts */
+.heart {
+  position: absolute;
+  font-size: 30px;
+  animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-800px); opacity: 0; }
+}
+
+.dance {
+  font-size: 75px;
+  animation: dance 0.6s infinite alternate;
+}
+
+@keyframes dance {
+  from { transform: rotate(-10deg) scale(1); }
+  to { transform: rotate(10deg) scale(1.15); }
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="card" id="card">
@@ -66,24 +121,59 @@
   <button id="no">NO 😜</button>
 </div>
 
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7c0d94d5b6.mp3" type="audio/mpeg">
+</audio>
+
 <script>
-  const noBtn = document.getElementById("no");
-  const yesBtn = document.getElementById("yes");
-  const card = document.getElementById("card");
+const herName = "My Love"; // 👈 change her name here
 
-  noBtn.addEventListener("mouseover", () => {
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  });
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const card = document.getElementById("card");
+const music = document.getElementById("music");
 
-  yesBtn.addEventListener("click", () => {
-    card.innerHTML = `
-      <h1>YAAAY!!! 💘🎉</h1>
-      <div class="dance">💃🕺💃🕺</div>
-    `;
-  });
+noBtn.addEventListener("mouseover", () => {
+  noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
+  noBtn.style.top = Math.random() * (window.innerHeight - 60) + "px";
+});
+
+yesBtn.addEventListener("click", () => {
+  document.body.classList.add("love-mode");
+  music.play();
+
+  card.innerHTML = `
+    <h1>${herName}, you chose my heart 💘</h1>
+    <p>This moment means everything ✨</p>
+    <div class="dance">💃🕺💃🕺</div>
+  `;
+
+  for (let i = 0; i < 7; i++) {
+    const x = Math.random() * window.innerWidth + "px";
+
+    const stem = document.createElement("div");
+    stem.className = "stem";
+    stem.style.left = x;
+
+    const flower = document.createElement("div");
+    flower.className = "flower";
+    flower.innerText = "🌹";
+    flower.style.left = x;
+
+    document.body.appendChild(stem);
+    document.body.appendChild(flower);
+  }
+
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💖";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.bottom = "0px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }, 400);
+});
 </script>
 
 </body>
